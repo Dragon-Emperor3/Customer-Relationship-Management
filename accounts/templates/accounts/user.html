@@ -1,0 +1,54 @@
+{% extends 'accounts/main.html' %}
+
+{% block content %}
+
+{% include 'accounts/status.html' %}
+    
+
+<div class="row" style="margin-right: 5px; margin-left: 5px;">
+    <div class="col">
+        <div class="card card-body">
+            
+            <div class="form-outline">
+                
+                <form method="get" class="p-20">
+
+                    <div class="form group">
+                        {{myFilter.form}}
+                        
+                    </div>
+                        
+                    
+
+                    <button class="btn btn-primary " type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="margin-right: 5px; margin-left: 5px;">    
+    <div class="col">
+        <div class="card padding: 0" style="max-height:600px; overflow:scroll;">
+            <table class="table table-sm">
+                <tr class="thead-dark" style="position: sticky; top: 0; z-index: 10;">
+                    <th>Products</th>
+                    <th>Note</th>
+                    <th>Date Ordered</th>
+                    <th>Status</th>                       
+                </tr>
+                
+                {% for i in orders %}
+                    <tr>                    
+                        <td>{{i.product}}</td>                        
+                        <td style="max-width: 500px;">{{i.note}}</td>                        
+                        <td>{{i.date_created}}</td>                                        
+                        <td>{{i.status}}</td>                                                                                                      
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div> 
+
+{% endblock content %}

@@ -1,0 +1,105 @@
+{% extends 'accounts/main.html' %}
+
+{% block content %}
+
+    <br>
+    <div class="row" style="margin-right: 5px; margin-left: 5px;">
+
+        <div class="col">
+            <div class="col-md">
+                <div class="card text-center text-white mb-3" id="total-orders">
+                    <div class="card-header">
+                        <h5 class"card-title" style="color:black;">Customer</h5>
+                    </div>
+                    <div class="card-body">
+                        <a href="" class="btn btn-warning btn-sm btn-block">Update Customer</a>
+                        <a href="{% url 'create_order' customer.id %}" class="btn btn-success btn-sm btn-block">Place Order</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="col-md">
+                <div class="card text-center text-white mb-3" id="orders-delivered">
+                    <div class="card-header">
+                        <h5 class="card-title" style="color:black;">Contact Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-title" style="color:black;">Email: {{customer.email}}</p>
+                    <p class="card-title" style="color:black;">Phone: {{customer.phone}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="col-md">
+                <div class="card text-center text-white mb-3" id="orders-pending">
+                    <div class="card-header">
+                        <h5 class="card-title" style="color:black;">Total Orders</h5>
+                    </div>
+                    <div class="card-body" >
+                        <h1 class="card-title" style="text-align: center; padding: 10px; color:black">{{orders_count}}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <div class="row" style="margin-right: 5px; margin-left: 5px;">
+        <div class="col">
+            <div class="card card-body">
+                
+                <div class="form-outline">
+                    
+                    <form method="get" class="p-20">
+
+                        <div class="form group">
+                            {{myFilter.form}}
+                            
+                        </div>
+                            
+                        
+
+                        <button class="btn btn-primary " type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="row" style="margin-right: 5px; margin-left: 5px;">
+        <div class="col-md">
+            <div class="card p-0 justify-content-evenly" style="height:300px; overflow:scroll;">
+                <table class="table">
+                    <tr class="thead-dark" style="position: sticky; top: 0; z-index: 10;">
+                        <th>Product</th>
+                        <th>Notes</th>
+                        <th>Date Ordered</th>
+                        <th>Status</th>
+                        <th>Update</th>
+                        <th>Remove</th>
+                    </tr>
+
+                    {% for i in orders %}
+
+                        <tr>
+                            <td>{{i.product}}</td>
+                            <td style="max-width: 500px;">{{i.note}}</td>
+                            <td>{{i.date_created}}</td>
+                            <td>{{i.status}}</td>
+                            <td><a class="btn btn-info btn-sm" href="{% url 'update_order' i.id %}">Update</a></td>                                        
+                            <td><a class="btn btn-danger btn-sm" href="{% url 'delete_order' i.id %}">Remove</a></td>  
+                        </tr>
+
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div> 
+
+{% endblock content %}
