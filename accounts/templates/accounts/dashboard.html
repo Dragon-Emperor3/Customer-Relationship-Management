@@ -4,20 +4,17 @@
 
 {% include 'accounts/status.html' %}
     <br>    
-    <div class="row">
+    <div class="row" style="margin-right: 5px; margin-left: 5px;">
         <div class="col-md-5">
             <h5>CUSTOMERS:</h5>
             <hr>
-            <div class="card card-body">
-                <a href="" class="btn btn-primary btn-sm btn-block">
-                    Create Customer
-                </a>
-                <table class="table table-sm">
-                    <tr>
+            <div class="card p-0 justify-content-evenly" style="height:320px; overflow:scroll;">
+                <table class="table">
+                    <tr class="thead-dark" style="position: sticky; top: 0; z-index: 10;">
 
                         <th>Customer</th>
                         <th>Phone</th>
-                        <th></th>
+                        <th>View</th>
                     </tr>
                     
                     
@@ -34,14 +31,11 @@
         </div>
         
         <div class="col-md-7">
-            <h5>LAST 5 ORDERS:</h5>
+            <h5> ORDERS:</h5>
             <hr>
-            <div class="card card-body">
-                {% comment %} <a href="{% url 'create_order' %}" class="btn btn-primary btn-sm btn-block">            
-                    Create Orders
-                </a> {% endcomment %}
-                <table class="table table-sm">
-                    <tr>
+            <div class="card padding: 0" style="height:320px; overflow:scroll;">
+                <table class="table">
+                    <tr class="thead-dark" style="position: sticky; top: 0; z-index: 10;">
                         <th>Products</th>
                         <th>Date Ordered</th>
                         <th>Status</th>
@@ -49,7 +43,9 @@
                         <th>Remove</th>                        
                     </tr>
                     
-                    {% for i in orders %}
+                    {% for i in latest_orders %}
+
+                        {% comment %} {% if  forloop.counter <= 5 %} {% endcomment %}
                         <tr>                    
                             <td>{{i.product}}</td>                        
                             <td>{{i.date_created}}</td>                                        
@@ -57,7 +53,9 @@
                             <td><a class="btn btn-info btn-sm" href="{% url 'update_order' i.id %}">Update</a></td>                                        
                             <td><a class="btn btn-danger btn-sm" href="{% url 'delete_order' i.id %}">Delete</a></td>                                        
                         </tr>
+                        {% comment %} {% endif %} {% endcomment %}
                     {% endfor %}
+                        
                 </table>
             </div>
         </div>

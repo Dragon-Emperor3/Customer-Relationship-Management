@@ -4,35 +4,35 @@
 
     <style>
         .profile-pic{
-            max-width: 200px;
-            max-height: 200px;
+            max-width: 90%;
+            max-height: 90%;
             margin: 0 auto;
-            border-radius: 50%;
+            border-radius: 50px;
         }
     </style>
 
     <br>
-    <div class="row">
+    <div class="row d-flex justify-content-center" >
 
-        <div class="col-md-3">
-            <div class="card card-body">
+        <div class="col-md-3" style="">
+            <div class="card card-body" style="background-color:#8ecae6; min-wdith:270px;">
                 <a href="{% url 'home' %}" class="btn btn-warning">&#8592; Back To Profile</a>
                 <hr>
                 <h3 style="text-align: center;"> Account Settings</h3>
                 <hr>
 
                 {% if request.user.customer.profile_pic %}
-                    <img src="{{request.user.customer.profile_pic.url}}" alt="" class="profile-pic">
+                    <img src="{{request.user.customer.profile_pic.url}}" class="profile-pic" style="width:auto;">
                 {% else %}
-                    <img src="{% static 'images/default.jpg' %}" alt="" class="profile-pic">
+                    <img src="{% static 'images/default.jpg' %}"  class="profile-pic">
                 {% endif %}
             </div>
         </div>
 
 
-        <div class="col-md-9">
-            <div class="card card-body">
-                <form method="POST" enctype="multipart/form-data">
+        <div class="col-md-6" >
+            <div class="card card-body" style="background-color:#8ecae6;">
+                <form method="POST" enctype="multipart/form-data" class='form-group'>
                     {% csrf_token %}
                     {{form.as_p}}
                     <input type="submit" value="Update Information" class="btn btn-primary">
