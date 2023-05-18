@@ -20,6 +20,17 @@ urlpatterns = [
     path('update_order/<str:primary_key>/', views.updateOrder, name="update_order"),
     path('delete_order/<str:pk>/', views.deleteOrder, name="delete_order"),  
 
+    
+    path('create_product', views.createProduct, name="create_product"),
+    path('update_product/<str:pk>/', views.updateProduct, name="update_product"),
+    path('delete_product/<str:pk>/', views.deleteProduct, name="delete_product"),
+
+    path('tag', views.tagHome, name="tag"),
+    path('create_tag', views.createTag, name="create_tag"),
+    path('update_tag/<str:pk>/', views.updateTag, name="update_tag"),
+    path('delete_tag/<str:pk>/', views.deleteTag, name="delete_tag"),
+
+
     path('reset_password/',
          auth_views.PasswordResetView.as_view(template_name='accounts/passwordReset/password_reset.html'), 
          name= 'reset_password'),

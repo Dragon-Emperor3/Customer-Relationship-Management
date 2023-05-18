@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 
 # from django.http import HttpResponse
 from .models import *
-from .forms import OrderForm, CustomerForm, CreateUserForm
+from .forms import *
 
 from .filters import FilterOrder
 
@@ -18,6 +18,7 @@ from django.contrib.auth.models import Group
 
 # Create your views here.
 
+# Creater and Login User Section
 @un_authenticated_user
 def registerPage(request):
 
@@ -73,11 +74,13 @@ def logoutUser(request):
     return redirect('login')
 
 
+#Website pages
 @login_required(login_url='login')
 @admin_only
 def home(request):
 
     orders= Order.objects.all()
+    lastest_orders= Order.objects.order_by('-date_created')
     customers= Customer.objects.all()
 
     total_customers= customers.count()
@@ -87,7 +90,7 @@ def home(request):
     pending= orders.filter(status='Pending').count()
 
 
-    context= {'orders':orders, 'customers':customers, 'total_orders':total_orders, 'delivered':delivered, 'pending':pending}
+    context= {'latest_orders':lastest_orders, 'customers':customers, 'total_orders':total_orders, 'delivered':delivered, 'pending':pending}
     return render(request, 'accounts/dashboard.html', context)
 
 
@@ -95,12 +98,18 @@ def home(request):
 @allowed_user(allowed_roles=['customer'])
 def user(request):
     orders= request.user.customer.order_set.all()
+    latest_orders= request.user.customer.order_set.order_by('-date_created')#This will show new orders at top
 
-    total_orders= orders.count()
-    delivered= orders.filter(status='Delivered').count()
-    pending= orders.filter(status='Pending').count()
+    total_orders= latest_orders.count()
+    delivered= latest_orders.filter(status='Delivered').count()
+    pending= latest_orders.filter(status='Pending').count()
 
-    context={'orders':orders,'orders':orders, 'total_orders':total_orders, 'delivered':delivered, 'pending':pending}
+    myFilter= FilterOrder(request.GET, queryset=latest_orders)
+    latest_orders= myFilter.qs
+
+    context={'orders':latest_orders, 'total_orders':total_orders,'myFilter':myFilter,
+                'delivered':delivered, 'pending':pending
+             }
     return render(request, 'accounts/user.html', context)
 
 
@@ -114,6 +123,7 @@ def accountSettings(request):
         form= CustomerForm(request.POST, request.FILES, instance=customer)
         if(form.is_valid):
             form.save()
+            return redirect('account')
 
     context={'form':form}
     return render(request, 'accounts/account_settings.html', context)
@@ -142,6 +152,7 @@ def customer(request, primary_key):
     return render(request, 'accounts/customer.html', context)
 
 
+#Order Related
 @login_required(login_url='login')
 @allowed_user(allowed_roles=['admin'])
 def createOrder(request, pk):
@@ -158,8 +169,9 @@ def createOrder(request, pk):
             form.save()
         return redirect('/')
 
-    context= {'formset':form}
+    context= {'form':form}
     return render(request, 'accounts/order_form.html', context)
+
 
 
 @login_required(login_url='login')
@@ -192,3 +204,102 @@ def deleteOrder(request, pk):
     
     context={'order': order}
     return render(request, 'accounts/delete_order.html', context)
+
+
+# Products Related
+@login_required(login_url='login')
+@allowed_user(allowed_roles=['admin'])
+def createProduct(request):
+    form= ProductForm()
+    if(request.method=='POST'):
+        form= ProductForm(request.POST)
+        if(form.is_valid()):
+            form.save()
+            return redirect('products')
+
+    context={'form':form}
+    return render(request, 'accounts/productForm/createForm.html', context)
+
+
+@login_required(login_url='login')
+@allowed_user(allowed_roles=['admin'])
+def updateProduct(request, pk):
+    product = Product.objects.get(id=pk)
+    form= ProductForm(instance=product)
+    if(request.method=='POST'):
+        form= ProductForm(request.POST, instance= product)
+        if(form.is_valid()):
+            form.save()
+            return redirect('products')
+
+    context={'form':form}
+    return render(request, 'accounts/productForm/createForm.html', context)
+
+
+@login_required(login_url='login')
+@allowed_user(allowed_roles=['admin'])
+def deleteProduct(request, pk):
+
+    product= Product.objects.get(id=pk)
+
+
+    if(request.method== "POST"):
+        product.delete()
+        return redirect('products')
+    
+    context={'product': product}
+    return render(request, 'accounts/productForm/delete_product.html', context)
+
+
+# Tags Related
+@login_required(login_url='login')
+@allowed_user(allowed_roles=['admin'])
+def tagHome(request):
+    tag= Tag.objects.all()
+    context={'tag':tag}
+    return render(request, 'accounts/tagForm/taghome.html', context)
+
+
+@login_required(login_url='login')
+@allowed_user(allowed_roles=['admin'])
+def createTag(request):
+    form= TagForm()
+    if(request.method=='POST'):
+        form= TagForm(request.POST)
+        if(form.is_valid()):
+            form.save()
+            return redirect('tag')
+
+    context={'form':form}
+    return render(request, 'accounts/tagForm/createTag.html', context)
+
+
+@login_required(login_url='login')
+@allowed_user(allowed_roles=['admin'])
+def updateTag(request, pk):
+    tag= Tag.objects.get(id=pk)
+
+    form= TagForm(instance=tag)
+    if(request.method=='POST'):
+        form= TagForm(request.POST, instance=tag)
+        if(form.is_valid()):
+            form.save()
+            return redirect('tag')
+
+    context={'form':form}
+    return render(request, 'accounts/tagForm/createTag.html', context)
+
+
+@login_required(login_url='login')
+@allowed_user(allowed_roles=['admin'])
+def deleteTag(request, pk):
+
+    tag= Tag.objects.get(id=pk)
+
+
+    if(request.method== "POST"):
+        tag.delete()
+        return redirect('tag')
+    
+    context={'tag': tag}
+    return render(request, 'accounts/tagForm/deleteTag.html', context)

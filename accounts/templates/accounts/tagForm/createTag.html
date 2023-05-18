@@ -13,8 +13,9 @@
 	
                 <form method="POST" action="">
                 {% csrf_token %}
-                    {{form.as_p}}
+                    {{form}}
                     <hr>
+                    <a class="btn btn-warning btn-sm" href="{% url 'tag' %}">Cancel</a>
                     <input type="submit" value="Sumbit" class="btn btn-success ">
                 </form>
             </div>
@@ -22,6 +23,4 @@
     </div>
 </div>
 
-
 {% endblock content %}
-
